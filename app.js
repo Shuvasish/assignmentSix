@@ -6,6 +6,8 @@ const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
 const spin = document.querySelector('.spinner_container');
 const search = document.querySelector('#search');
+const dots = document.querySelector('.dots');
+
 spin.classList.add('none');
 // selected image 
 let sliders = [];
@@ -24,11 +26,23 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 const showImages = (images) => {
   
       // console.log(images);
+
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
-  if (!images) console.log('nothing found');
+  // console.log(images.length, Boolean(images), images);
+  if (images.length===0){
+    // console.log('nothing found');
+    if(document.querySelector('.err')) return spinner();
+    let div = document.createElement('div');
+
+    div.className = 'col-lg-12 err display-1 d-flex justify-content-center';
+    div.innerHTML = `Image not found!`;
+    imagesArea.appendChild(div);
+    spinner();
+    return;
+  }
   images.forEach(image => {
     let div = document.createElement('div');
 
@@ -89,12 +103,18 @@ const createSlider = () => {
   const temp = document.getElementById('duration').value || 1000;
   const duration = Math.abs(temp);
   document.getElementById('duration').value = duration;
+  dots.innerHTML = '';
+  let html = '';
+  console.log(sliders);
   sliders.forEach(slide => {
     let item = document.createElement('div')
     item.className = "slider-item";
     item.innerHTML = `<img class="w-100"
     src="${slide}"
     alt="">`;
+    html = `<span class="dot" onclick="changeItem(-1)"></span>`;
+    console.log(html);
+    dots.insertAdjacentHTML('beforeend',html);
     sliderContainer.appendChild(item)
   })
   changeSlide(0)
