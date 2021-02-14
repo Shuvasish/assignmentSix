@@ -44,11 +44,11 @@ const showImages = (images) => {
     return;
   }
   if(document.querySelector('.err')) document.querySelector('.err').remove();
-  images.forEach(image => {
+  images.forEach((image,inx) => {
     let div = document.createElement('div');
 
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
+    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") data-iid="${inx}" src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div);
     
   })
@@ -106,22 +106,23 @@ const createSlider = () => {
   document.getElementById('duration').value = duration;
   dots.innerHTML = '';
   let html = '';
-  console.log(sliders);
-  sliders.forEach(slide => {
+  // console.log(sliders);
+  sliders.forEach((slide,inx) => {
     let item = document.createElement('div')
     item.className = "slider-item";
     item.innerHTML = `<img class="w-100"
     src="${slide}"
     alt="">`;
-    html = `<span class="dot" onclick="changeItem(-1)"></span>`;
-    console.log(html);
+    html = `<span class="dot ${inx}" data-id="d${inx}" ></span>`;
+    // console.log(html);
     dots.insertAdjacentHTML('beforeend',html);
     sliderContainer.appendChild(item)
   })
   changeSlide(0)
   timer = setInterval(function () {
     slideIndex++;
-    changeSlide(slideIndex);
+    // console.log(slideIndex);
+    changeSlide(slideIndex,slideIndex-1);
   }, duration);
 }
 
@@ -131,9 +132,10 @@ const changeItem = index => {
 }
 
 // change slide item
-const changeSlide = (index) => {
+const changeSlide = (index,inx='0') => {
 
   const items = document.querySelectorAll('.slider-item');
+  const dots = document.querySelectorAll('.dot');
   if (index < 0) {
     slideIndex = items.length - 1
     index = slideIndex;
@@ -147,7 +149,13 @@ const changeSlide = (index) => {
   items.forEach(item => {
     item.style.display = "none"
   })
-
+  dots.forEach(dot=>{
+    // console.log(dot);
+    dot.classList.remove('activeDot');
+  })
+// console.log(dots[0]);
+dots[inx].classList.add('activeDot');
+  
   items[index].style.display = "block"
 }
 
